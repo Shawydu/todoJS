@@ -15,11 +15,6 @@
 
 <script>
 	$(function() {
-		$('#new-form').submit(function(event) {
-			event.preventDefault();
-			var textbox = $('.new-todo');
-			console.log("Task: ", textbox.val());
-		});
 		// The taskHtml method takes in a JavaScript representation of the task and produces an HTML repre using <li> tags
 		function taskHtml(task) {
 			var checkedStatus = task.done ? "checked" : ""
@@ -53,6 +48,23 @@
 			ulTodos.html(htmlString);
 
 			$('.toggle').change(toggleTask);
+		});
+
+		$('#new-form').submit(function(event) {
+			event.preventDefault();
+			var textbox = $('.new-todo');
+			var payload = {
+				task: {
+					title: textbox.val()
+				}
+			}
+			console.log(payload);
+			$.post("/tasks", payload).success(function(data) {
+				var htmlString = taskHtml(data)
+				var ulTools = $('.todo-list');
+				ulTools.append(htmlString);
+				$('.toggle').click(toggleTask);
+			});
 		});
 	});
 </script>
